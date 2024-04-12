@@ -1,18 +1,27 @@
-from api_hh import HeadHunterAPI
-import requests
+from config import config
+from utils import get_company, get_vacancies, create_database, save_data_to_database
 
 
 def main():
-    a = ['https://hh.ru/employer/4194553',
-         'https://hh.ru/employer/753341?hhtmFrom=vacancy_search_list',
-         'https://hh.ru/employer/41862?hhtmFrom=vacancy_search_list',
-         'https://hh.ru/employer/2664870?hhtmFrom=vacancy_search_list']
-    # response = requests.get(f'https://hh.ru/employer/753341?hhtmFrom=vacancy_search_list')
-    # print(response.status_code)
-    for i in a:
-        print(i)
-        response = requests.get(f'{i}')
-        print(response.status_code)
+    employee_ids = [
+        '4194553',
+        '753341',
+        '41862',
+        '2664870',
+        '9757724',
+        '625332',
+        '4112759',
+        '205152',
+        '52389',
+        '3529'
+    ]
+
+    params = config()
+    company_list = get_company(employee_ids)
+    vacancy_list = get_vacancies(employee_ids)
+    print(company_list)
+    create_database('hh_company', params=params)
+    save_data_to_database('hh_company', company_list, vacancy_list, params)
 
 
 if __name__ == '__main__':
