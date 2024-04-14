@@ -21,7 +21,7 @@ def main():
     vacancy_list = get_vacancies(employee_ids)
     print(company_list)
     create_database('hh_company', params=params)
-    save_data_to_database('hh_company', company_list, vacancy_list, params)
+    save_data_to_database('hh_company', company_list, vacancy_list, params=params)
 
 
 if __name__ == '__main__':

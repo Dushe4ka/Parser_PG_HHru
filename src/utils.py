@@ -89,7 +89,7 @@ def create_database(database_name, params):
             publish_date date,
             company_name varchar(100) not null,
             salary_from int
-            salary_ti int
+            salary_to int
             url_vacancy text);
             """)
 
