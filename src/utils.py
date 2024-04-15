@@ -12,13 +12,13 @@ def get_url(employee_id):
             "area": 113,
             "only_with_vacancies": True
         }
-        r = requests.get("https://api.hh.ru/vacancies/", timeout=1, params=params)
-        r.raise_for_status()
+        response = requests.get("https://api.hh.ru/vacancies/", params=params)
+        response.raise_for_status()
     except requests.exceptions.HTTPError as errh:
         print("HTTP Error")
         print(errh.args[0])
         # Prints the response code
-    return r.json()['items']
+    return response.json()['items']
 
 
 def get_company(employee_ids):
@@ -62,10 +62,13 @@ def create_database(database_name, params):
     cur = conn.cursor()
 
     try:
-        cur.execute(f"DROP DATABASE {database_name};")
+        cur.execute(f"DROP DATABASE IF EXISTS {database_name};")
     except:
         pass
-    cur.execute(f"CREATE DATABASE {database_name};")
+    try:
+        cur.execute(f"CREATE DATABASE {database_name};")
+    except:
+        pass
 
     conn.close()
 
@@ -73,6 +76,7 @@ def create_database(database_name, params):
 
     with conn.cursor() as cur:
         cur.execute("""
+            DROP TABLE companies, vacancies;
             CREATE TABLE IF NOT EXISTS companies
             (company_id serial primary key,
             company_name varchar(100) not null,
@@ -88,8 +92,8 @@ def create_database(database_name, params):
             city_name varchar(100),
             publish_date date,
             company_name varchar(100) not null,
-            salary_from int
-            salary_to int
+            salary_from int,
+            salary_to int,
             url_vacancy text);
             """)
 
@@ -97,7 +101,7 @@ def create_database(database_name, params):
     conn.close()
 
 
-def save_data_to_database(database_name, data_companies, data_vacancies, **params):
+def save_data_to_database(database_name, data_companies, data_vacancies, params):
     """Сохранение данных о компаниях и их вакансиях в базу данных"""
     conn = psycopg2.connect(dbname=database_name, **params)
 
@@ -106,7 +110,7 @@ def save_data_to_database(database_name, data_companies, data_vacancies, **param
             company = data_company['companies']
             cur.execute("""
                 INSERT INTO companies (company_name, url_company)
-                VALUES (%s, %s);
+                VALUES (%s, %s)
                 returning company_id;
                 """, (company['company_name'], company['company_url']))
             company_id = cur.fetchone()[0]

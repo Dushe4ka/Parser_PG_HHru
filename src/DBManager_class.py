@@ -1,19 +1,20 @@
 import psycopg2
 from config import config
 
+
 class DBManager:
     def __init__(self):
         self.db_name = 'hh_companies'
 
     def execute(self, query):
-        conn = psycopg2.connect(dbname=self.db_name, **config())
+        params = config()
+        conn = psycopg2.connect(dbname=self.db_name, **params)
         with conn:
             with conn.cursor() as cur:
                 cur.execute(query)
                 results = cur.fetchall()
         conn.close()
         return results
-
 
     def get_companies_and_vacancies(self):
         """Получает список всех компаний и количество вакансий у каждой компании."""
@@ -54,5 +55,3 @@ class DBManager:
         result = self.execute(f'select * from vacancies'
                               f'where vacancy_name like "%%s%"', keyword)
         return result
-
-
