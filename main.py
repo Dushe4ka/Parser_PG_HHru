@@ -1,6 +1,6 @@
 from config import config
 from src.utils import get_company, get_vacancies, create_database, save_data_to_database
-from src.DBManager_class import DBManager
+from src.postgres_dbm import DBManager
 
 
 def main():
@@ -46,6 +46,7 @@ def main():
             print(result.get_vacancies_with_keyword('python'))
     except:
         pass
+
 
 if __name__ == '__main__':
     main()
