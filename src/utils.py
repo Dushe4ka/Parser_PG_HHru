@@ -124,7 +124,7 @@ def save_data_to_database(database_name, data_companies, data_vacancies, params)
                             (vacancy['company_name'], company_id, vacancy['vacancy_name'],
                              vacancy['city'], vacancy['publish_date'], vacancy['salary_from'],
                              vacancy['salary_to'], vacancy['vacancy_url'])
-                    )
+                            )
 
     conn.commit()
     conn.close()

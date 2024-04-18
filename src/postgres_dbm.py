@@ -4,7 +4,7 @@ from config import config
 
 class DBManager:
     def __init__(self):
-        self.db_name = 'hh_companies'
+        self.db_name = 'hh_company'
 
     def execute(self, query):
         params = config()
